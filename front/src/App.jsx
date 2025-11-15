@@ -4,12 +4,14 @@ import generateCaption from './models/api';
 
 export const App = () => {
   const [imgSrc, setImgSrc] = useState(null)
-  const [caption, setCaption] = useState('<Caption>')
+  const [caption, setCaption] = useState('Sem legenda')
 
-  function addCaption() {
-    const caption = generateCaption(imgSrc)
+  async function addCaption() {
+    setCaption('Generating caption...')
 
-    setCaption(caption)
+    const caption = await generateCaption(imgSrc)
+
+    setCaption(caption[0]['generated_text'])
   }
 
   return (
