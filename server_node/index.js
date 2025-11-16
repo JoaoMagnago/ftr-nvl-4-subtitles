@@ -1,8 +1,11 @@
 const express = require('express')
 const cors = require('cors')
+const { translate } = require('./models/api')
 
 const app = express()
 const port = 3000
+
+app.use(express.json())
 
 app.use(cors({
   origin: 'http://localhost:5173'
@@ -14,7 +17,10 @@ app.get('/', (req, res) => {
 
 app.post('/translate', (req, res) => {
   console.log('New request')
-  res.send([{ 'translated_text': 'Legenda traduzida pelo servidor' }])
+
+  const textENG = req.body['text']
+
+  res.send(translate(textENG))
 })
 
 app.listen(port, () => {
