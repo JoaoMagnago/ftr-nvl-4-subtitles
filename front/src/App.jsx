@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
-import { generateCaption, translate } from './models/api';
+import { convertToAudio, generateCaption, translate } from './models/api';
 
 export const App = () => {
   const [imgSrc, setImgSrc] = useState(null)
@@ -19,17 +19,18 @@ export const App = () => {
     const translatedCaption = await translate(caption)
     setCaptionPTBR(translatedCaption[0]['translation_text'])
 
-    const newAudioSrc = ""
+    const audioEndpoint = await convertToAudio(translatedCaption)
+    const newAudioSrc = "http://localhost:5000/" + audioEndpoint[0]['url']
     setAudioSrc(newAudioSrc)
   }
 
   useEffect(() => {
     if (captionAudio.current && audioSrc) {
-      caption.current.pause()
-      caption.current.load()
-      caption.current.play()
+      captionAudio.current.pause()
+      captionAudio.current.load()
+      captionAudio.current.play()
     }
-  }, [audioSrc, caption])
+  }, [audioSrc])
 
   return (
     <>
