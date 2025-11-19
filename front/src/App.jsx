@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { generateCaption, translate } from './models/api';
 
@@ -6,6 +6,9 @@ export const App = () => {
   const [imgSrc, setImgSrc] = useState(null)
   const [caption, setCaption] = useState('No caption')
   const [captionPTBR, setCaptionPTBR] = useState('Sem legenda')
+  const [audioSrc, setAudioSrc] = useState(null)
+
+  const captionAudio = useRef()
 
   async function addCaption() {
     setCaption('Generating caption...')
@@ -16,7 +19,17 @@ export const App = () => {
     const translatedCaption = await translate(caption)
     setCaptionPTBR(translatedCaption[0]['translation_text'])
 
+    const newAudioSrc = ""
+    setAudioSrc(newAudioSrc)
   }
+
+  useEffect(() => {
+    if (captionAudio.current && audioSrc) {
+      caption.current.pause()
+      caption.current.load()
+      caption.current.play()
+    }
+  }, [audioSrc, caption])
 
   return (
     <>
@@ -29,6 +42,9 @@ export const App = () => {
         <img src={imgSrc} height={200} style={{ marginBottom: '10px' }} />
         <span>{caption}</span>
         <span>{captionPTBR}</span>
+        <audio controls ref={captionAudio}>
+          <source src={audioSrc}></source>
+        </audio>
       </div>
     </>
   )
